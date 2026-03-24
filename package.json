@@ -2,5 +2,27 @@
   "dependencies": {
     "express": "^5.2.1",
     "sqlite3": "^6.0.1"
-  }
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  },
+  "name": "sql-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AzikoCodess/SQL-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/AzikoCodess/SQL-api/issues"
+  },
+  "homepage": "https://github.com/AzikoCodess/SQL-api#readme"
 }

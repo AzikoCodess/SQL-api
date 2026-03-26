@@ -7,5 +7,12 @@ const db = new sqlite3.Database("./database.db", (err) => {
     console.log("DB ulandi")
   }
 })
-
+db.run(`
+CREATE TABLE IF NOT EXISTS users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT,
+  password TEXT,
+  role TEXT
+)
+`)
 module.exports = db

@@ -52,10 +52,10 @@ const login = async (req, res) => {
     try {
         const user = await userService.findUserByName(name)
         if (!user) {
-            return res.status(404).json("User topilmadi")
+            return res.status(404).json("2User topilmadi")
         }
 
-        const ok = bcrypt.compare(password, user.password)
+        const ok = await bcrypt.compare(password, user.password)
         if (!ok) {
             return res.status(401).json("Wrong password")
         }
@@ -88,7 +88,7 @@ const getUser = async (req, res) => {
         const { id } = req.params
         const user = await userService.getUserById(id)
         if (!user) {
-            return res.status(404).json("User topilmadi")
+            return res.status(404).json("1User topilmadi")
         }
         res.status(200).json(user)
     } catch (err) {
@@ -102,7 +102,7 @@ const updateUser = async (req, res) => {
         const { name } = req.body
         const changes = await userService.updateUser(id, name)
         if (changes === 0) {
-            return res.status(404).json({ message: "User topilmadi" })
+            return res.status(404).json({ message: "3User topilmadi" })
         }
         res.status(200).json({
             updated: changes
@@ -117,7 +117,7 @@ const deleteUser = async (req, res) => {
         const { id } = req.params
         const changes = await userService.deleteUser(id)
         if (changes === 0) {
-            return res.status(404).json({ message: "User topilmadi" })
+            return res.status(404).json({ message: "5User topilmadi" })
         }
         res.status(200).json({
             deleted: changes
@@ -127,7 +127,7 @@ const deleteUser = async (req, res) => {
     }
 }
 
-const searchUsers = async (req, res) => {
+const qidirUsers = async (req, res) => {
     try {
         const { name } = req.query
         let users
@@ -136,10 +136,34 @@ const searchUsers = async (req, res) => {
         } else {
             users = await userService.getAllUsers()
         }
-
         res.status(200).json(users)
     } catch (err) {
         res.status(500).json({ message: err.message })
     }
 }
-module.exports = { register, login, profile, getUsers, getUser, updateUser, deleteUser, searchUsers }
+
+const getUsersPaginated = async (req, res) => {
+    try {
+        const page = Number(req.query.page) || 1
+        const limit = Number(req.query.limit) || 5
+
+        if (page < 1 || limit < 1) {
+            return res.status(400).json({
+                message: "page va limit 1 dan katta bo‘lishi kerak"
+            })
+        }
+
+        const offset = (page - 1) * limit
+
+        const users = await userService.getUsersPaginated(limit, offset)
+
+        res.status(200).json({
+            page, limit,
+            data: users
+        })
+    } catch (err) {
+        res.status(500).json({ message: err.message })
+    }
+}
+
+module.exports = { register, login, profile, getUsers, getUser, updateUser, deleteUser, qidirUsers, getUsersPaginated }

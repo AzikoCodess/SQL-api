@@ -12,6 +12,7 @@ router.get("/profile", authMiddleware, userController.profile)
 
 router.get("/search", userController.qidirUsers)
 router.get("/paginated", userController.getUsersPaginated)
+router.get("/advanced", userController.getUsersAdvencedController)
 
 router.get("/", userController.getUsers)
 router.get("/:id", userController.getUser)

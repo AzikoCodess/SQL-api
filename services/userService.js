@@ -112,14 +112,14 @@ const getUsersPaginated = (limit, offset) => {
         })
     })
 }
-
+// GET /users/advanced?name=a&page=1&limit=3&sort=name&order=desc shu holatda ishlatamiz alohida yozsa ham boladi
 const getUsersAdvenced = (options) => {
     return new Promise((resolve, reject) => {
         let { name, limit, offset, sort, order } = options
 
         let sql = `
         SELECT id, name, role
-        FROM users, 
+        FROM users
         WHERE 1=1
         `
 
@@ -138,8 +138,32 @@ const getUsersAdvenced = (options) => {
                 sql += ` ORDER BY ${sort} ${orderby}`
             }
         }
+
+        sql += ` LIMIT ? OFFSET ?`
+        params.push(limit, offset)
+
+        db.all(sql, params, (err, rows) => {
+            err ? reject(err) : resolve(rows)
+        })
     })
 }
+
+const getUsersCount = (name) => {
+    return new Promise((resolve, reject) => {
+        let sql = `SELECT COUNT(*) as total FROM users WHERE 1=1`
+        let params = []
+
+        if (name) {
+            sql += " AND name LIKE ?"
+            params.push(`%${name}%`)
+        }
+
+        db.get(sql, params, (err, row) => {
+            err ? reject(err) : resolve(row.total)
+        })
+    })
+}
+
 
 module.exports = {
     createUser,
@@ -149,5 +173,7 @@ module.exports = {
     updateUser,
     deleteUser,
     searchUsers,
-    getUsersPaginated
+    getUsersPaginated,
+    getUsersAdvenced,
+    getUsersCount
 }
